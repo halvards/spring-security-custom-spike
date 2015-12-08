@@ -1,7 +1,10 @@
 package com.skogsrud.halvard.spring.security.custom.spike.config;
 
+import com.skogsrud.halvard.spring.security.custom.spike.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.encoding.PlaintextPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,10 +17,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/", "/hello*").permitAll()  // no authentication on endpoints '/' and '/hello*'
+                .antMatchers("/", "/hello.txt").permitAll()  // no authentication on endpoints '/' and '/hello*'
                 .anyRequest().authenticated()  // all other endpoints require authentication
                 .and()
-            .formLogin()
+            .formLogin().defaultSuccessUrl()
 //                .loginPage("/login") // custom login page
                 .permitAll()  // no authentication on logout endpoint
                 .and()
@@ -27,8 +30,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        PlaintextPasswordEncoder passwordEncoder = new PlaintextPasswordEncoder();
+        passwordEncoder.setIgnorePasswordCase(true);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        authenticationProvider.setUserDetailsService(new CustomUserDetailsService());
         auth
-            .inMemoryAuthentication()
-            .withUser("user").password("password").roles("USER");
+            .eraseCredentials(false)
+            .authenticationProvider(authenticationProvider);
     }
 }
