@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -20,11 +21,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/hello.txt").permitAll()  // no authentication on endpoints '/' and '/hello*'
                 .anyRequest().authenticated()  // all other endpoints require authentication
                 .and()
-            .formLogin().defaultSuccessUrl()
-//                .loginPage("/login") // custom login page
+            .formLogin()
+                .loginPage("/login") // custom login page
+                .passwordParameter("familyName") // form element name
+                .defaultSuccessUrl("/hello.html")
                 .permitAll()  // no authentication on logout endpoint
                 .and()
             .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                .logoutSuccessUrl("/hello.txt")
                 .permitAll();  // no authentication on logout endpoint
     }
 
