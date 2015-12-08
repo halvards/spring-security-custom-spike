@@ -15,6 +15,11 @@ import java.util.Collections;
 public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        /**
+         * Make call to external service here. Response contains information to populate UserDetails object.
+         *
+         * Throw UsernameNotFoundException if user cannot be found.
+         */
 //        return new CustomUser(username, "Joe", "Bloggs", true);
         return new User(username, "Bloggs", Collections.emptyList());
     }
