@@ -28,7 +28,7 @@ public class HelloWorldIntegrationTest {
     @Test
     public void testHelloWorld() throws Exception {
         Request request = new Request.Builder()
-                .url("http://localhost:" + port + "/app/hello")
+                .url("http://localhost:" + port + "/app/hello.txt")
                 .build();
         Response response = client.newCall(request).execute();
         assertThat(response.code(), equalTo(200));
