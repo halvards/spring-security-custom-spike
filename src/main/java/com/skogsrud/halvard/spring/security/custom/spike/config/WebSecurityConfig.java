@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()  // no authentication on logout endpoint
                 .and()
             .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")) // allow logout using GET when CSRF protection is enabled
                 .logoutSuccessUrl("/hello.txt")
                 .permitAll();  // no authentication on logout endpoint
     }
@@ -41,7 +41,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         authenticationProvider.setUserDetailsService(new CustomUserDetailsService());
         auth
-            .eraseCredentials(false)
             .authenticationProvider(authenticationProvider);
     }
 }
